@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/common-head :: common-head">
+    </head>
+    <title>Mi página CLIENTES</title>
+    <body>
+        <h1>
+            Bienvenido a mi página, CLIENTES
+            <span th:text="${nombre}"></span>
+            !
+        </h1>
+        <div class="container mt-5">
+            <h1>Clientes</h1>
+            <button
+                type="button"
+                class="btn btn-primary mb-3"
+                data-toggle="modal"
+                data-target="#addClienteModal"
+            >
+                Añadir cliente
+            </button>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cliente : ${clientes}">
+                        <td th:text="${cliente.id}"></td>
+                        <td th:text="${cliente.nombre}"></td>
+                        <td th:text="${cliente.apellidos}"></td>
+                        <td th:text="${cliente.email}"></td>
+                        <td th:text="${cliente.telefono}"></td>
+                        <td>
+                          <button type="button" class="btn btn-primary btn-sm editClienteButton" th:data-id="${cliente.id}">
+                            Editar
+                          </button>
+                          <button type="button" class="btn btn-danger btn-sm deleteClienteButton" th:data-id="${cliente.id}">
+                            Eliminar
+                          </button>
+                        </td>                        
+                        <!-- Aquí puedes agregar más celdas para mostrar otros campos del cliente -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Modal para añadir cliente -->
+        <div
+            class="modal fade"
+            id="addClienteModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Añadir cliente</h5>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                        >
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addClienteForm">
+                            <div class="form-group">
+                                <label for="nombre">Nombre</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="nombre"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="apellidos">Apellidos</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="apellidos"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input
+                                    type="email"
+                                    class="form-control"
+                                    id="email"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="telefono">Teléfono</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="telefono"
+                                    required
+                                >
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            Cerrar
+                        </button>
+                        <button type="button" class="btn btn-primary" id="saveClienteButton">
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal para editar cliente -->
+        <div
+            class="modal fade"
+            id="editClienteModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="editClienteModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editClienteModalLabel">
+                            Editar cliente
+                        </h5>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                        >
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editClienteForm">
+                            <input type="hidden" id="editClienteId">
+                            <div class="form-group">
+                                <label for="editNombre">Nombre</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="editNombre"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="editApellidos">Apellidos</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="editApellidos"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="editEmail">Email</label>
+                                <input
+                                    type="email"
+                                    class="form-control"
+                                    id="editEmail"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="editTelefono">Teléfono</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="editTelefono"
+                                    required
+                                >
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn btn-primary" id="updateClienteButton">
+                            Guardar cambios
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal de confirmación para eliminar cliente -->
+        <div
+            class="modal fade"
+            id="deleteClienteModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="deleteModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">
+                            Eliminar cliente
+                        </h5>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                        >
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Está seguro de que desea eliminar este cliente?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteButton">
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal para mostrar mensaje de éxito -->
+        <div
+            class="modal fade"
+            id="successModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="successModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="successModalLabel">Cliente añadido exitosamente</h5>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                        >
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="successMessage"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                            Aceptar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal para mostrar mensaje de éxito al eliminar -->
+        <div
+            class="modal fade"
+            id="deleteSuccessModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="deleteSuccessModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteSuccessModalLabel">
+                            Cliente eliminado exitosamente
+                        </h5>
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                        >
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="deleteSuccessMessage"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">
+                            Aceptar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>/*Este código JavaScript hace lo siguiente:
+        Escucha el evento click del botón "Guardar" en el modal.
+        Obtiene los valores de los campos del formulario.
+        Crea un objeto JSON llamado clienteData con los valores del formulario.
+        Realiza una solicitud AJAX de tipo POST a la URL /clientes/api, enviando el objeto clienteData como el cuerpo de la solicitud.
+        Si la solicitud se realiza con éxito, cierra el modal, muestra una alerta y recarga la página.
+        Si ocurre un error, muestra una alerta y registra el error en la consola.*/
+  $(document).ready(function () {
+    // Escuchar el evento click del botón "Guardar" en el modal
+    $("#saveClienteButton").click(function () {
+      const nombre = $("#nombre").val();
+      const apellidos = $("#apellidos").val();
+      const email = $("#email").val();
+      const telefono = $("#telefono").val();
+
+      // Crear objeto JSON con los datos del cliente
+      const clienteData = {
+        nombre: nombre,
+        apellidos: apellidos,
+        email: email,
+        telefono: telefono,
+      };
+      // Realizar solicitud AJAX
+      $.ajax({
+        url: "/clientes/api",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(clienteData),
+        success: function (response) {
+          $("#addClienteModal").modal("hide");
+          
+          // Crear y mostrar mensaje de éxito con los detalles del cliente
+          const successMessage = `
+            <p>El cliente ha sido añadido con éxito:</p>
+            <ul>
+              <li>Nombre: ${response.nombre}</li>
+              <li>Apellidos: ${response.apellidos}</li>
+              <li>Email: ${response.email}</li>
+              <li>Teléfono: ${response.telefono}</li>
+            </ul>`;
+          $("#successMessage").html(successMessage);
+          $("#successModal").modal("show");
+          
+          // Recargar la página cuando la ventana modal de éxito se cierre
+          $("#successModal").on("hidden.bs.modal", function () {
+            location.reload();
+          });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          const errorMessage = jqXHR.getResponseHeader("X-Error-Message");
+          if (errorMessage) {
+            alert(errorMessage);
+          } else {
+            alert("Error al añadir el cliente. Por favor, verifica los datos e intenta de nuevo.");
+          }
+          console.error("Error al añadir cliente:", errorThrown);
+        },
+      });
+    });
+  });
+  // Escucha el evento click del botón "Editar" en la tabla
+  $(".editClienteButton").click(function () {
+  const clienteId = $(this).data("id");
+  console.log("Editando cliente con ID:", clienteId); // Agregar esta línea
+
+  const apiUrl = "/clientes/" + clienteId + "/api";
+  console.log("URL de la API:", apiUrl); // Agregar esta línea
+
+  // Realizar una solicitud AJAX para obtener los detalles del cliente
+  $.ajax({
+    url: apiUrl,
+    type: "GET",
+    dataType: "json",
+    success: function (response) {
+      // Rellenar el formulario del modal con los datos del cliente
+      $("#editClienteId").val(response.id);
+      $("#editNombre").val(response.nombre);
+      $("#editApellidos").val(response.apellidos);
+      $("#editEmail").val(response.email);
+      $("#editTelefono").val(response.telefono);
+
+      // Mostrar el modal de edición
+      $("#editClienteModal").modal("show");
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+  console.error("Error en la solicitud AJAX:", jqXHR, textStatus, errorThrown);
+  alert("Error al cargar los datos del cliente. Por favor, intenta de nuevo.");
+  console.error("Error al cargar los datos del cliente:", errorThrown);
+},
+  });
+});
+
+// Escucha el evento click del botón "Guardar cambios" en el modal de edición
+$("#updateClienteButton").click(function () {
+  const clienteId = $("#editClienteId").val();
+  const nombre = $("#editNombre").val();
+  const apellidos = $("#editApellidos").val();
+  const email = $("#editEmail").val();
+  const telefono = $("#editTelefono").val();
+
+  // Crear objeto JSON con los datos del cliente actualizados
+  const clienteData = {
+    nombre: nombre,
+    apellidos: apellidos,
+    email: email,
+    telefono: telefono,
+  };
+
+  // Realizar solicitud AJAX para actualizar el cliente
+  $.ajax({
+    url: "/clientes/" + clienteId,
+    type: "PUT",
+    contentType: "application/json",
+    data: JSON.stringify(clienteData),
+    success: function (response) {
+      $("#editClienteModal").modal("hide");
+      alert("Cliente actualizado exitosamente");
+      location.reload();
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      const errorMessage = jqXHR.getResponseHeader("X-Error-Message");
+      if (errorMessage) {
+        alert(errorMessage);
+      } else {
+        alert("Error al actualizar el cliente. Por favor, verifica los datos e intenta de nuevo.");
+      }
+      console.error("Error al actualizar cliente:", errorThrown);
+    },
+  });
+});
+
+  // Escuchar el evento click del botón "Eliminar" en la tabla
+$("body").on("click", ".deleteClienteButton", function () {
+  const clienteId = $(this).data("id");
+  $("#confirmDeleteButton").data("cliente-id", clienteId);
+  $("#deleteClienteModal").modal("show");
+});
+
+// Escuchar el evento click del botón "Eliminar" en el modal de confirmación
+$("#confirmDeleteButton").click(function () {
+  const clienteId = $(this).data("cliente-id");
+
+  // Realizar solicitud AJAX
+$.ajax({
+  url: "/clientes/" + clienteId,
+  type: "DELETE",
+  success: function () {
+    $("#deleteClienteModal").modal("hide");
+    
+    // Crear y mostrar mensaje de éxito con el ID del cliente eliminado
+    const deleteSuccessMessage = `
+      <p>El cliente con ID ${clienteId} ha sido eliminado exitosamente.</p>`;
+    $("#deleteSuccessMessage").html(deleteSuccessMessage);
+    $("#deleteSuccessModal").modal("show");
+    
+    // Recargar la página cuando la ventana modal de éxito al eliminar se cierre
+    $("#deleteSuccessModal").on("hidden.bs.modal", function () {
+      location.reload();
+    });
+  },
+  error: function (jqXHR, textStatus, errorThrown) {
+    const errorMessage = jqXHR.getResponseHeader("X-Error-Message");
+    if (errorMessage) {
+      alert(errorMessage);
+    } else {
+      alert("Error al eliminar el cliente. Por favor, intenta de nuevo.");
+    }
+    console.error("Error al eliminar cliente:", errorThrown);
+  },
+});
+});
+    </script>
+</html>

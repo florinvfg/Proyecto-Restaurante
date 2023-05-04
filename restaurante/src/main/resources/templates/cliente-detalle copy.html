@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments/common-head :: common-head">
+  </head>
+  <body>
+    <h1 class="my-4">Detalle del Cliente</h1>
+    <!-- Incluir la barra de navegación -->
+    <div th:replace="fragments/navbar :: navbar"></div>
+    <div class="container">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Información del cliente</h5>
+                    <dl class="row">
+                        <dt class="col-sm-3">ID:</dt>
+                        <dd class="col-sm-9" th:id="'id_' + ${cliente.id}" th:text="${cliente.id}"></dd>
+        
+                        <dt class="col-sm-3">Nombre:</dt>
+                        <dd class="col-sm-9" id="nombre" th:text="${cliente.nombre}"></dd>
+        
+                        <dt class="col-sm-3">Apellidos:</dt>
+                        <dd class="col-sm-9" id="apellidos" th:text="${cliente.apellidos}"></dd>
+
+                        <dt class="col-sm-3">Correo electrónico:</dt>
+                        <dd class="col-sm-9" id="email" th:text="${cliente.email}"></dd>
+
+                        <dt class="col-sm-3">Teléfono:</dt>
+                        <dd class="col-sm-9" id="telefono" th:text="${cliente.telefono}"></dd>
+
+                        <dt class="col-sm-3">DNI:</dt>
+                        <dd class="col-sm-9" id="dni" th:text="${cliente.dni}"></dd>
+
+                        <dt class="col-sm-3">Sexo:</dt>
+                        <dd class="col-sm-9" id="sexo" th:text="${cliente.sexo}"></dd>
+
+                        <dt class="col-sm-3">Fecha de nacimiento:</dt>
+                        <dd class="col-sm-9" id="fecha_nacimiento" th:text="${cliente.fecha_nacimiento}"></dd>
+
+                        <dt class="col-sm-3">Estatura:</dt>
+                        <dd class="col-sm-9" id="estatura" th:text="${cliente.estatura}"></dd>
+
+                        <dt class="col-sm-3">Peso:</dt>
+                        <dd class="col-sm-9" id="peso" th:text="${cliente.peso}"></dd>
+
+                        <dt class="col-sm-3">Consentimiento:</dt>
+                        <dd class="col-sm-9" id="consentimiento" th:text="${cliente.consentimiento}"></dd>
+
+                        <dt class="col-sm-3">Fecha de consentimiento:</dt>
+                        <dd class="col-sm-9" id="fecha_consentimiento" th:text="${cliente.fecha_consentimiento}"></dd>
+
+                        <!-- Agrega más elementos dl aquí para mostrar los otros campos del cliente -->
+              </dl>
+              <button class="edit-btn" th:data-cliente-id="${cliente.id}">Editar</button>
+              <button type="button" class="btn btn-danger">Eliminar</button>
+              <a href="lista-clientes.html" class="btn btn-secondary">Volver al listado</a>
+          </div>
+        </div>
+        </div>        
+    </div>
+    
+    <!-- Modal Bootstrap 4.5.2 para editar cliente con todos sus campos usando java Spring y los datos que ya tiene la página del usuario, sin hacer consulta a base de datos -->
+<div class="modal fade" id="editClienteModal" tabindex="-1" role="dialog" aria-labelledby="editClienteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="editClienteModalLabel">Editar Cliente</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <!-- Añade aquí el formulario para editar los campos del cliente -->
+              <form id="editClienteForm">
+                <div class="form-group">
+                    <label for="modalId">ID</label>
+                    <input type="text" class="form-control" id="modalId" name="id" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="modalNombre">Nombre</label>
+                    <input type="text" class="form-control" id="modalNombre" name="nombre">
+                </div>
+                <div class="form-group">
+                    <label for="modalApellidos">Apellidos</label>
+                    <input type="text" class="form-control" id="modalApellidos" name="apellidos">
+                </div>
+                <div class="form-group">
+                    <label for="modalEmail">Correo electrónico</label>
+                    <input type="text" class="form-control" id="modalEmail" name="email">
+                </div>
+                <div class="form-group">
+                    <label for="modalTelefono">Teléfono</label>
+                    <input type="text" class="form-control" id="modalTelefono" name="telefono">
+                </div>
+                <div class="form-group">
+                    <label for="modalDni">DNI</label>
+                    <input type="text" class="form-control" id="modalDni" name="dni">
+                </div>
+                <div class="form-group">
+                    <label for="modalSexo">Sexo</label>
+                    <input type="text" class="form-control" id="modalSexo" name="sexo">
+                </div>
+                <div class="form-group">
+                    <label for="modalFechaNacimiento">Fecha de nacimiento</label>
+                    <input type="text" class="form-control" id="modalFechaNacimiento" name="fecha_nacimiento">
+                </div>
+                <div class="form-group">
+                    <label for="modalEstatura">Estatura</label>
+                    <input type="text" class="form-control" id="modalEstatura" name="estatura">
+                </div>
+                <div class="form-group">
+                    <label for="modalPeso">Peso</label>
+                    <input type="text" class="form-control" id="modalPeso" name="peso">
+                </div>
+                <div class="form-group">
+                    <label for="modalConsentimiento">Consentimiento</label>
+                    <input type="text" class="form-control" id="modalConsentimiento" name="consentimiento">
+                </div>
+                <div class="form-group">
+                    <label for="modalFechaConsentimiento">Fecha de consentimiento</label>
+                    <input type="text" class="form-control" id="modalFechaConsentimiento" name="fecha_consentimiento">
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-primary" id="saveChangesBtn">Guardar cambios</button>
+          </div>
+      </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $(document).on("click", ".edit-btn", function ()  {
+          // Copia los valores de los campos a la ventana modal
+          $('#editClienteModal input[name="id"]').val($(this).data('cliente-id'));
+          $('#editClienteModal input[name="nombre"]').val($('#nombre').text());
+          $('#editClienteModal input[name="apellidos"]').val($('#apellidos').text());
+          $('#editClienteModal input[name="email"]').val($('#email').text());
+          $('#editClienteModal input[name="telefono"]').val($('#telefono').text());
+          $('#editClienteModal input[name="dni"]').val($('#dni').text());
+          $('#editClienteModal input[name="sexo"]').val($('#sexo').text());
+          $('#editClienteModal input[name="fecha_nacimiento"]').val($('#fecha_nacimiento').text());
+          $('#editClienteModal input[name="estatura"]').val($('#estatura').text());
+          $('#editClienteModal input[name="peso"]').val($('#peso').text());
+          $('#editClienteModal input[name="consentimiento"]').val($('#consentimiento').text());
+          $('#editClienteModal input[name="fecha_consentimiento"]').val($('#fecha_consentimiento').text());
+          $('#editClienteModal input[name="id"]').val($(this).attr("data-cliente-id"));
+          // Muestra la ventana modal
+          $("#editClienteModal").modal("show");
+      });
+           //solicitud de cambio de datos de cliente en la base de datos
+    function updateCliente(cliente) {
+    return $.ajax({
+      url: "/api/" + cliente.id,
+        method: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify(cliente)
+    });
+}
+$("#saveChangesBtn").on("click", function () {
+    // Recopila los datos del formulario en la ventana modal
+    var updatedCliente = {
+        id: $('#modalId').val(),
+        nombre: $('#modalNombre').val(),
+        apellidos: $('#modalApellidos').val(),
+        email: $('#modalEmail').val(),
+        telefono: $('#modalTelefono').val(),
+        dni: $('#modalDni').val(),
+        sexo: $('#modalSexo').val(),
+        fecha_nacimiento: $('#modalFechaNacimiento').val(),
+        estatura: $('#modalEstatura').val(),
+        peso: $('#modalPeso').val(),
+        consentimiento: $('#modalConsentimiento').val(),
+        fecha_consentimiento: $('#modalFechaConsentimiento').val()
+    };
+
+    // Llama a la función para actualizar el cliente y manejar la respuesta
+    updateCliente(updatedCliente)
+        .done(function (response) {
+            console.log("Cliente actualizado:", response);
+            // Actualiza la información del cliente en la página
+            $('#nombre').text(response.nombre);
+            $('#apellidos').text(response.apellidos);
+            $('#email').text(response.email);
+            $('#telefono').text(response.telefono);
+            $('#dni').text(response.dni);
+            $('#sexo').text(response.sexo);
+            $('#fecha_nacimiento').text(response.fecha_nacimiento);
+            $('#estatura').text(response.estatura);
+            $('#peso').text(response.peso);
+            $('#consentimiento').text(response.consentimiento);
+            $('#fecha_consentimiento').text(response.fecha_consentimiento);
+
+            // Cierra la ventana modal
+            $("#editClienteModal").modal("hide");
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+        console.error("Error al actualizar el cliente:", jqXHR, textStatus, errorThrown);
+        });
+        });
+});
+</script>
+</html>

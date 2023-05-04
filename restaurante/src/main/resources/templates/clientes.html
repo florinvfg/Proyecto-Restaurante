@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/common-head :: common-head"></head>
+    <body>
+        <h1>
+            Página de Administración de CLIENTES
+            <span th:text="${nombre}"></span>
+            !
+        </h1>
+        <!-- Incluir la barra de navegación -->
+        <div th:replace="fragments/navbar :: navbar"></div>
+
+        <div class="container">
+            <button
+                type="button"
+                class="btn btn-primary my-3"
+                data-toggle="modal"
+                data-target="#addClienteModal"
+            >
+                Añadir cliente
+            </button>
+            <div class="table-responsive">
+                <table class="table table-striped table-smaller-font">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Fecha Nacimiento</th>
+                        <th>Acciones</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cliente : ${clientes}">
+                        <td th:text="${cliente.id}"></td>
+                        <td th:text="${cliente.nombre}"></td>
+                        <td th:text="${cliente.apellidos}"></td>
+                        <td class="email-cell" th:text="${cliente.email}"></td>
+                        <td th:text="${cliente.telefono}"></td>
+                        <td th:text="${cliente.fecha_nacimiento}"></td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm editClienteButton" th:data-id="${cliente.id}">
+                                Editar
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm deleteClienteButton" th:data-id="${cliente.id}">
+                                Eliminar
+                            </button>
+                                <a th:href="@{/clientes/{id}(id=${cliente.id})}" class="btn btn-info btn-sm showClienteButton">Ver</a>
+                        </td>
+                        <!-- Aquí puedes agregar más celdas para mostrar otros campos del cliente -->
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        
+      <!-- Modal para añadir cliente -->
+        <div class="modal fade" id="addClienteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Añadir cliente</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addClienteForm">
+                            <div class="form-group">
+                                <label for="nombre">Nombre</label>
+                                <input type="text" class="form-control" id="nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="apellidos">Apellidos</label>
+                                <input type="text" class="form-control" id="apellidos" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="telefono">Teléfono</label>
+                                <input type="text" class="form-control" id="telefono" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dni">DNI</label>
+                                <input type="text" class="form-control" id="dni" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sexo">Sexo</label>
+                                <input type="text" class="form-control" id="sexo" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fecha_nacimiento">Fecha de nacimiento</label>
+                                <input type="date" class="form-control" id="fecha_nacimiento" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="estatura">Estatura</label>
+                                <input type="number" class="form-control" id="estatura" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="peso">Peso</label>
+                                <input type="number" class="form-control" id="peso" step="0.01" required>
+                            </div>
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="consentimiento" required>
+                                <label class="form-check-label" for="consentimiento">Consentimiento</label>
+                            </div>
+                            <div class="form-group" style="display:none">
+                                <label for="fecha_consentimiento">Fecha de consentimiento</label>
+                                <input type="date" class="form-control" id="fecha_consentimiento" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" id="saveClienteButton">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal éxito al añadir -->
+        <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header"><h5 class="modal-title" id="successModalLabel">Cliente añadido exitosamente</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+                    <div class="modal-body"><div id="successMessage"></div></div>
+                    <div class="modal-footer"><button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal editar cliente -->
+        <div class="modal fade" id="editClienteModal" tabindex="-1" role="dialog" aria-labelledby="editClienteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header"><h5 class="modal-title" id="editClienteModalLabel">Editar cliente</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+                    <div class="modal-body">
+                        <form id="editClienteForm">
+                            <input type="hidden" id="editClienteId">
+                            <div class="form-group"><label for="editNombre">Nombre</label><input type="text" class="form-control" id="editNombre" required></div>
+                            <div class="form-group"><label for="editApellidos">Apellidos</label><input type="text" class="form-control" id="editApellidos" required></div>
+                            <div class="form-group"><label for="editEmail">Email</label><input type="email" class="form-control" id="editEmail" required></div>
+                            <div class="form-group"><label for="editTelefono">Teléfono</label><input type="text" class="form-control" id="editTelefono" required></div>
+                        </form>
+                    </div>
+                    <div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button><button type="button" class="btn btn-primary" id="updateClienteButton">Guardar cambios</button></div>
+                </div>
+            </div>
+        </div>
+
+       <!-- Modal confirmación eliminar cliente -->
+        <div class="modal fade" id="deleteClienteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header"><h5 class="modal-title" id="deleteModalLabel">Eliminar cliente</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+                    <div class="modal-body">¿Está seguro de que desea eliminar este cliente?</div>
+                    <div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button><button type="button" class="btn btn-danger" id="confirmDeleteButton">Eliminar</button></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal éxito al eliminar -->
+        <div class="modal fade" id="deleteSuccessModal" tabindex="-1" role="dialog" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header"><h5 class="modal-title" id="deleteSuccessModalLabel">Cliente eliminado exitosamente</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+                    <div class="modal-body"><div id="deleteSuccessMessage"></div></div>
+                    <div class="modal-footer"><button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button></div>
+                </div>
+            </div>
+        </div>
+</body>
+
+    <script>/*Este código JavaScript hace lo siguiente:
+        Escucha el evento click del botón "Guardar" en el modal.
+        Obtiene los valores de los campos del formulario.
+        Crea un objeto JSON llamado clienteData con los valores del formulario.
+        Realiza una solicitud AJAX de tipo POST a la URL /clientes/api, enviando el objeto clienteData como el cuerpo de la solicitud.
+        Si la solicitud se realiza con éxito, cierra el modal, muestra una alerta y recarga la página.
+        Si ocurre un error, muestra una alerta y registra el error en la consola.*/
+        $(document).ready(function () {
+    // Escuchar el evento click del botón "Guardar" en el modal
+    $("#saveClienteButton").click(function () {
+        // Verifica si algún campo está vacío
+        if (!validarCamposVacios([
+            $("#clienteNombre").val(),
+            $("#clienteApellidos").val(),
+            $("#clienteEmail").val(),
+            $("#clienteTelefono").val(),
+            $("#clienteDNI").val(),
+            $("#clienteSexo").val(),
+            $("#clienteFechaNacimiento").val(),
+            $("#clienteEstatura").val(),
+            $("#clientePeso").val(),
+        ])) {
+            return;
+        }
+
+        // Crear objeto JSON con los datos del cliente
+        const clienteData = {
+            nombre: $("#clienteNombre").val(),
+            apellidos: $("#clienteApellidos").val(),
+            email: $("#clienteEmail").val(),
+            telefono: $("#clienteTelefono").val(),
+            dni: $("#clienteDNI").val(),
+            sexo: $("#clienteSexo").val(),
+            fecha_nacimiento: $("#clienteFechaNacimiento").val(),
+            estatura: $("#clienteEstatura").val(),
+            peso: $("#clientePeso").val(),
+            consentimiento: $("#clienteConsentimiento").is(":checked"),
+            fecha_consentimiento: new Date().toISOString().slice(0, 19)
+        };
+
+        // Realizar solicitud AJAX
+        $.ajax({
+            url: "/clientes/api",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(clienteData),
+            success: function (response) {
+                handleSuccess(response);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                // El resto del código para manejar errores
+            },
+        });
+    });
+
+    function handleSuccess(response) {
+        $("#addClienteModal").modal("hide");
+
+        // Crear y mostrar mensaje de éxito con los detalles del cliente
+        const successMessage = `
+            <p>El cliente ha sido añadido con éxito:</p>
+            <ul>
+                <li>Nombre: ${response.nombre}</li>
+                <li>Apellidos: ${response.apellidos}</li>
+                <li>Email: ${response.email}</li>
+                <li>Teléfono: ${response.telefono}</li>
+            </ul>`;
+        $("#successMessage").html(successMessage);
+        $("#successModal").modal("show");
+
+        // Recargar la página cuando la ventana modal de éxito se cierre
+        $("#successModal").on("hidden.bs.modal", function () {
+            location.reload();
+        });
+    }
+});
+
+
+  // Escucha el evento click del botón "Editar" en la tabla
+  $("body").on("click", ".editClienteButton", function () {
+  const clienteId = $(this).data("id");
+  console.log("Editando cliente con ID:", clienteId); // Agregar esta línea
+
+  const apiUrl = "/clientes/" + clienteId + "/api";
+  console.log("URL de la API:", apiUrl); // Agregar esta línea
+
+  // Realizar una solicitud AJAX para obtener los detalles del cliente partiendo del siguiente controller:
+  $.ajax({
+    url: apiUrl,
+    type: "GET",
+    success: function (response) {
+      console.log("Detalles del cliente:", response); // Agregar esta línea
+      $("#editClienteId").val(response.id);
+      $("#editNombre").val(response.nombre);
+      $("#editApellidos").val(response.apellidos);
+      $("#editEmail").val(response.email);
+      $("#editTelefono").val(response.telefono);
+      $("#editClienteModal").modal("show");
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert("Error al obtener los detalles del cliente. Por favor, intenta de nuevo.");
+      console.error("Error al obtener detalles del cliente:", errorThrown);
+    },
+  });
+});
+
+//Cargar clientes en la web
+function cargarClientes() {
+  $.ajax({
+    url: "/clientes-json",
+    type: "GET",
+    success: function (response) {
+      console.log(response); // Agregar esta línea para inspeccionar el valor de response
+      if (typeof response === "string") {
+        try {
+          response = JSON.parse(response); // Convertir la cadena JSON en un objeto si response es una cadena
+        } catch (error) {
+          console.error("Error al analizar la respuesta JSON:", error);
+          return;
+        }
+      }
+      
+      let clientesHTML = "";
+      response.forEach((cliente) => {
+        clientesHTML += `
+          <tr>
+            <td>${cliente.id}</td>
+            <td>${cliente.nombre}</td>
+            <td>${cliente.apellidos}</td>
+            <td>${cliente.email}</td>
+            <td>${cliente.telefono}</td>
+            <td>${cliente.dni}</td>
+            <td>${cliente.sexo}</td>
+            <td>${cliente.fecha_nacimiento}</td>
+            <td>${cliente.estatura}</td>
+            <td>${cliente.peso}</td>
+            <td>${cliente.consentimiento}</td>
+            <td>
+              <button data-id="${cliente.id}" class="btn btn-primary editClienteButton">Editar</button>
+              <button data-id="${cliente.id}" class="btn btn-danger deleteClienteButton">Eliminar</button>
+            </td>
+          </tr>`;
+      });
+      $("#clientesTable tbody").html(clientesHTML);
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert("Error al cargar la lista de clientes. Por favor, intenta de nuevo.");
+      console.error("Error al cargar la lista de clientes:", errorThrown);
+    },
+  });
+}
+
+
+
+
+// Escucha el evento click del botón "Guardar cambios" en el modal de edición
+$("#updateClienteButton").click(function () {
+  const clienteId = $("#editClienteId").val();
+  const nombre = $("#editNombre").val();
+  const apellidos = $("#editApellidos").val();
+  const email = $("#editEmail").val();
+  const telefono = $("#editTelefono").val();
+    const dni = $("#editDni").val();
+    const sexo = $("#editSexo").val();
+    const fecha_nacimiento = $("#editFecha_nacimiento").val();
+    const estatura = $("#editEstatura").val();
+    const peso = $("#editPeso").val();
+    const consentimiento = $("#editConsentimiento").is(":checked");
+    const fecha_consentimiento = new Date().toISOString().slice(0, 19);
+
+  // Crear objeto JSON con los datos del cliente actualizados
+  const clienteData = {
+    nombre: nombre,
+    apellidos: apellidos,
+    email: email,
+    telefono: telefono,
+    dni: dni,
+    sexo: sexo,
+    fecha_nacimiento: fecha_nacimiento,
+    estatura: estatura,
+    peso: peso,
+    consentimiento: consentimiento,
+    fecha_consentimiento: fecha_consentimiento
+  };
+
+// Realizar solicitud AJAX para actualizar el cliente
+$.ajax({
+  url: "/clientes/" + clienteId + "/api", // Asegúrate de agregar /api al final de la URL
+  type: "PUT",
+  contentType: "application/json",
+  data: JSON.stringify(clienteData),
+  success: function (response) {
+    $("#editClienteModal").modal("hide");
+    alert("Cliente actualizado exitosamente");
+    location.reload();
+  },
+  error: function (jqXHR, textStatus, errorThrown) {
+    const errorMessage = jqXHR.getResponseHeader("X-Error-Message");
+    if (errorMessage) {
+      alert(errorMessage);
+    } else {
+      alert("Error al actualizar el cliente. Por favor, verifica los datos e intenta de nuevo.");
+    }
+    console.error("Error al actualizar cliente:", errorThrown);
+  },
+});
+});
+
+  // Escuchar el evento click del botón "Eliminar" en la tabla
+$("body").on("click", ".deleteClienteButton", function () {
+  const clienteId = $(this).data("id");
+  $("#confirmDeleteButton").data("cliente-id", clienteId);
+  $("#deleteClienteModal").modal("show");
+});
+
+// Escuchar el evento click del botón "Eliminar" en el modal de confirmación
+$("#confirmDeleteButton").click(function () {
+  const clienteId = $(this).data("cliente-id");
+
+  // Realizar solicitud AJAX
+$.ajax({
+  url: "/clientes/" + clienteId,
+  type: "DELETE",
+  success: function () {
+    $("#deleteClienteModal").modal("hide");
+    
+    // Crear y mostrar mensaje de éxito con el ID del cliente eliminado
+    const deleteSuccessMessage = `
+      <p>El cliente con ID ${clienteId} ha sido eliminado exitosamente.</p>`;
+    $("#deleteSuccessMessage").html(deleteSuccessMessage);
+    $("#deleteSuccessModal").modal("show");
+    
+    // Recargar la página cuando la ventana modal de éxito al eliminar se cierre
+    $("#deleteSuccessModal").on("hidden.bs.modal", function () {
+      location.reload();
+    });
+  },
+  error: function (jqXHR, textStatus, errorThrown) {
+  let errorMessage;
+  
+  try {
+    // Intentar extraer el mensaje de error del cuerpo de la respuesta JSON
+    errorMessage = JSON.parse(jqXHR.responseText).message;
+  } catch (error) {
+    // Si no se puede extraer el mensaje, usar un mensaje de error genérico
+    errorMessage = "Error al actualizar el cliente. Por favor, verifica los datos e intenta de nuevo.";
+  }
+  
+  alert(errorMessage);
+  console.error("Error al actualizar cliente:", errorThrown);
+},
+    
+
+});
+
+//funcion para validar que no hay campos vacios
+function validarCamposVacios(campos) {
+    for (const campo of campos) {
+        if (campo.val().trim() === "") {
+            alert("Por favor, complete todos los campos del formulario.");
+            campo.focus();
+            return false;
+        }
+    }
+    return true;
+}
+
+});
+
+    </script>
+</html>
